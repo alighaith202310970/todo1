@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tasks</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>My Tasks</h1>
+
+<form method="POST">
+    <input type="text" name="title" placeholder="Task title" required>
+    <input type="text" name="description" placeholder="Description">
+    <button type="submit">Add</button>
+</form>
+
+{% for todo in todos %}
+<div>
+    <h3 class="{% if todo[3] %}done{% endif %}">
+        {{ todo[1] }}
+    </h3>
+
+    <p>{{ todo[2] }}</p>
+
+    <a href="/done/{{ todo[0] }}">✔</a>
+    <a href="/edit/{{ todo[0] }}">✏️</a>
+</div>
+{% endfor %}
+
+</body>
+</html>
