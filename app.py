@@ -52,7 +52,7 @@ init_db()
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form['name']
+        name = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
@@ -122,9 +122,9 @@ def todos():
         conn.commit()
 
     cur.execute(
-        "SELECT * FROM todos WHERE user_id=%s",
-        (session['user_id'],)
-    )
+    "SELECT * FROM todos WHERE user_id=%s AND is_deleted=FALSE",
+    (session['user_id'],)
+)
     todos = cur.fetchall()
 
     cur.close()
@@ -186,7 +186,23 @@ def edit(id):
 def logout():
     session.clear()
     return redirect('/login')
+@app.route('/delete/<int:id>')
 
+@app.route('/delete/<int:id>')
+def delete(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "UPDATE todos SET is_deleted = TRUE WHERE id=%s",
+        (id,)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect('/todos')
 
 if __name__ == '__main__':
     app.run(debug=True)
